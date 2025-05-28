@@ -26,7 +26,7 @@ export const login = createAsyncThunk< IUser, UserLogin, {rejectValue: GlobalErr
 
             return user.data;
         }catch(e){
-            if(isAxiosError(e) && e.response && e.response.status === 400){
+            if(isAxiosError(e) && e.response && e.response.status === 401){
                 return rejectWithValue(e.response.data);
             }
             throw e;
