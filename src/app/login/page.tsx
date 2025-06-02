@@ -9,7 +9,7 @@ const Login = ()=>{
     const { loginError, loginLoading} = useAppSelector((state=>state.user));
     const [state, setState] = useState({
         email: "",
-        password: '',
+        password: "",
     });
 
     const handleInputChange = (e: ChangeEvent<HTMLInputElement>) => {
@@ -28,7 +28,16 @@ const Login = ()=>{
                 password: state.password.trim(),
                 email: state.email.trim(),
             }
-            await dispatch(login(loginMutation)).unwrap();
+            const user = await dispatch(login(loginMutation)).unwrap();
+            await fetch("/api/set-user", {
+                method: "POST",
+                headers: {
+                    "Content-Type": "application/json",
+                },
+                body: JSON.stringify({
+                    user: user,
+                })
+            });
         }catch(error){
             console.log(error)
         }

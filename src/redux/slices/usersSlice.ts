@@ -1,6 +1,6 @@
 import {createSlice} from "@reduxjs/toolkit";
 import {login, register} from "@/redux/thunks/usersThunk";
-import {GlobalError, IUser, ValidationError} from "../../../types/usersTypes";
+import {GlobalError, IUser} from "../../../types/usersTypes";
 
 interface UsersState {
     user: IUser | null;
@@ -28,6 +28,7 @@ const UsersSlice = createSlice({
     },
     extraReducers: (builder) => {
         builder.addCase(register.pending, (state) => {
+            state.registerError = null;
             state.registerLoading = true;
         });
         builder.addCase(register.fulfilled, (state, {payload: user}) => {
@@ -40,6 +41,7 @@ const UsersSlice = createSlice({
         });
 
         builder.addCase(login.pending, (state) => {
+            state.registerError = null;
             state.loginLoading = true;
         });
         builder.addCase(login.fulfilled, (state, {payload: user}) => {

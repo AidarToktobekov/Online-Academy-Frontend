@@ -32,7 +32,16 @@ const Register = ()=>{
                 confirmPassword: state.confirmPassword.trim(),
                 email: state.email.trim(),
             }
-            await dispatch(register(userMutation)).unwrap();
+            const user = await dispatch(register(userMutation)).unwrap();
+            await fetch("/api/set-user", {
+                method: "POST",
+                headers: {
+                    "Content-Type": "application/json",
+                },
+                body: JSON.stringify({
+                    user: user,
+                })
+            });
         }catch(error){
             console.log(error)
         }
