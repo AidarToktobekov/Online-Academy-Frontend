@@ -1,38 +1,54 @@
 "use client"
-import {Alert, Button, Container, Grid, TextField} from "@mui/material";
+import {Alert, Button, Container, Grid, styled, TextField} from "@mui/material";
 import React, {ChangeEvent, FormEvent, useState} from "react";
 import {useAppDispatch, useAppSelector} from "@/redux/hooks";
 import {register} from "@/redux/thunks/usersThunk";
+import CloudUploadIcon from '@mui/icons-material/CloudUpload';
+import {UserMutation} from "../../../types/usersTypes";
 
+const VisuallyHiddenInput = styled('input')({
+    clip: 'rect(0 0 0 0)',
+    clipPath: 'inset(50%)',
+    height: 1,
+    overflow: 'hidden',
+    position: 'absolute',
+    bottom: 0,
+    left: 0,
+    whiteSpace: 'nowrap',
+    width: 1,
+});
 const Register = ()=>{
     const dispatch = useAppDispatch();
     const { registerLoading , registerError} = useAppSelector((state=>state.user));
-    const [state, setState] = useState({
+    const [state, setState] = useState<UserMutation>({
         username: '',
         email: "",
         password: '',
         confirmPassword: '',
+        avatar: null,
     });
 
     const handleInputChange = (e: ChangeEvent<HTMLInputElement>) => {
-        const {name, value} = e.target;
+        const {name, value, files} = e.target;
 
         setState(prev=>({
             ...prev,
-            [name]: value,
+            [name]: name === "avatar" ? (files ? files[0] : null) : value,
         }));
     };
 
     const onSubmit = async (e: FormEvent) => {
         e.preventDefault();
         try{
-            const userMutation = {
-                username: state.username.trim(),
-                password: state.password.trim(),
-                confirmPassword: state.confirmPassword.trim(),
-                email: state.email.trim(),
+            const formData = new FormData();
+            formData.append("username", state.username.trim());
+            formData.append("password", state.password.trim());
+            formData.append("confirmPassword", state.confirmPassword.trim());
+            formData.append("email", state.email.trim());
+            if (state.avatar) {
+                formData.append('avatar', state.avatar);
             }
-            const user = await dispatch(register(userMutation)).unwrap();
+            const user = await dispatch(register(formData)).unwrap();
             await fetch("/api/set-user", {
                 method: "POST",
                 headers: {
@@ -105,6 +121,23 @@ const Register = ()=>{
                                 autoComplete={"confirm-password"}
                                 onChange={handleInputChange}
                             />
+                        </div>
+                        <div className="my-3">
+                            <Button
+                                component="label"
+                                role={undefined}
+                                variant="contained"
+                                tabIndex={-1}
+                                startIcon={<CloudUploadIcon />}
+                            >
+                                Upload files
+                                <VisuallyHiddenInput
+                                    type="file"
+                                    name={"avatar"}
+                                    onChange={handleInputChange}
+                                    multiple
+                                />
+                            </Button>
                         </div>
                         <div className="my-3">
                             <Button variant={"contained"} type={"submit"} className="w-full" loading={registerLoading}>

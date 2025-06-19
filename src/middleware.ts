@@ -1,15 +1,15 @@
-import {NextRequest, NextResponse} from "next/server";
+import { NextRequest, NextResponse } from 'next/server';
 
-export function middleware(request: NextRequest){
-    const user = request.cookies.get("user")?.value;
+export async function middleware(req: NextRequest) {
+  const token = req.cookies.get("access_token")?.value;
 
-    if (!user) {
-        return NextResponse.redirect(new URL("/", request.url));
-    }
+  if (!token) {
+    return NextResponse.redirect(new URL('/login', req.url));
+  }
 
-    return NextResponse.next();
+  return NextResponse.next();
 }
 
 export const config = {
-    matcher: ["/my-profile"],
-}
+    matcher: ['/my-profile'],
+};

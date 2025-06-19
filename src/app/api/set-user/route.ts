@@ -2,10 +2,9 @@ import { cookies } from 'next/headers'
 
 export async function POST(req: Request) {
     const { user } = await req.json();
-
+  console.log(user)
     const cookieStore = await cookies();
-
-    cookieStore.set('user', JSON.stringify(user), {
+    cookieStore.set('access_token', JSON.stringify(user.access_token), {
         httpOnly: true,
         secure: process.env.NODE_ENV === 'production',
         maxAge: 60 * 60 * 24,

@@ -3,11 +3,11 @@ import {GlobalError, IUser, UserLogin, UserMutation} from "../../../types/usersT
 import {isAxiosError} from "axios";
 import axiosApi from "../../../axiosApi";
 
-export const register = createAsyncThunk< IUser, UserMutation, {rejectValue: GlobalError}>(
+export const register = createAsyncThunk< IUser, FormData, {rejectValue: GlobalError}>(
     "users/register",
     async(userMutation, { rejectWithValue })=>{
         try{
-            const user = await axiosApi.post("users/register", userMutation);
+            const user = await axiosApi.post("users/register", userMutation, {headers: {"Content-Type": "multipart/form-data"}});
 
             return user.data;
         }catch(e){
@@ -22,7 +22,7 @@ export const login = createAsyncThunk< IUser, UserLogin, {rejectValue: GlobalErr
     "users/login",
     async(userLogin, { rejectWithValue })=>{
         try{
-            const user = await axiosApi.post("users/login", userLogin);
+            const user = await axiosApi.post("users/login", userLogin, {withCredentials: true});
 
             return user.data;
         }catch(e){
@@ -32,3 +32,21 @@ export const login = createAsyncThunk< IUser, UserLogin, {rejectValue: GlobalErr
             throw e;
         }
     });
+
+export const me = createAsyncThunk("users/me", async()=>{
+  try{
+    const user = await axiosApi.get("users/me", {withCredentials: true},);
+    console.log(user, "- route me")
+    return user.data;
+  }catch (e){
+    throw e;
+  }
+})
+
+export const logout = createAsyncThunk("users/logout", async()=>{
+    try{
+        return await axiosApi.post("users/logout", {withCredentials: true});
+    }catch (e){
+        throw e;
+    }
+})

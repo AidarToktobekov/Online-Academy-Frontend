@@ -1,5 +1,5 @@
 import {createSlice} from "@reduxjs/toolkit";
-import {login, register} from "@/redux/thunks/usersThunk";
+import {login, me, register} from "@/redux/thunks/usersThunk";
 import {GlobalError, IUser} from "../../../types/usersTypes";
 
 interface UsersState {
@@ -52,6 +52,16 @@ const UsersSlice = createSlice({
             state.loginError = error || null;
             state.loginLoading = false;
         });
+      builder.addCase(me.pending, (state) => {
+        console.log("me - pending");
+      });
+      builder.addCase(me.fulfilled, (state, {payload: user}) => {
+        console.log("me - fulfilled");
+        state.user = user;
+      });
+      builder.addCase(me.rejected, (state, {payload: error}) => {
+        console.log("me - rejected");
+      });
     }
 });
 

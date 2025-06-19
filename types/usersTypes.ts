@@ -1,3 +1,5 @@
+import {Course} from "./coursesTypes";
+
 export interface IUser {
     access_token: string;
     user: {
@@ -5,6 +7,7 @@ export interface IUser {
         email: string;
         username: string;
         createdAt: Date;
+        courses: Course[];
     };
 }
 
@@ -13,6 +16,7 @@ export interface UserMutation{
     email: string;
     password: string;
     confirmPassword: string;
+    avatar: null | File;
 }
 
 export interface ValidationError{

@@ -1,25 +1,9 @@
-import { combineReducers, configureStore } from '@reduxjs/toolkit';
-import {
-  FLUSH,
-  PAUSE,
-  PERSIST,
-  persistReducer,
-  persistStore,
-  PURGE,
-  REGISTER,
-  REHYDRATE,
-} from "redux-persist";
-import storage from 'redux-persist/lib/storage';
+import {combineReducers, configureStore} from '@reduxjs/toolkit';
+import {FLUSH, PAUSE, PERSIST, PURGE, REGISTER, REHYDRATE,} from "redux-persist";
 import {usersReducer} from "@/redux/slices/usersSlice";
 
-const usersPersistConfig = {
-  key: "onlineAcademy:users",
-  storage,
-  whitelist: ["user"],
-};
-
 const rootReducer = combineReducers({
-  user: persistReducer(usersPersistConfig, usersReducer),
+  user: usersReducer,
 });
 
 export const store = configureStore({
@@ -31,8 +15,6 @@ export const store = configureStore({
       },
     }),
 });
-
-export const persistor = persistStore(store);
 
 export type RootState = ReturnType<typeof store.getState>;
 export type AppDispatch = typeof store.dispatch;
